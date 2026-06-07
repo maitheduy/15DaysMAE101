@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề thi trắc nghiệm: Đạo hàm và các quy tắc</title>
+    
+    <!-- Thư viện MathJax để hiển thị công thức toán học -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            background-color: #005a9e;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+        }
+        .question-container {
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 5px solid #005a9e;
+        }
+        .category {
+            display: inline-block;
+            background: #e1ecf4;
+            color: #005a9e;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .question-text {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-btn {
+            padding: 15px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1.05em;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        .option-btn:hover:not(:disabled) {
+            background: #eef2f5;
+            border-color: #aab7c4;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+        .option-letter {
+            font-weight: bold;
+            margin-right: 12px;
+            min-width: 20px;
+        }
+        /* Các trạng thái kết quả */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24;
+        }
+        .highlight-correct {
+            border-color: #28a745 !important;
+            border-width: 2px;
+            background-color: #eaffea !important;
+        }
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fffbe6;
+            border-left: 4px solid #ffa500;
+            border-radius: 4px;
+            display: none; /* Ẩn mặc định */
+        }
+        .explanation strong {
+            color: #d95319;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>BÀI THI TRẮC NGHIỆM: ĐẠO HÀM</h1>
+        <p>Bản chất của sự thay đổi và Các quy tắc tính toán</p>
+        <p><i>Thời gian làm bài: Không giới hạn | Hình thức: Tự chấm điểm ngay lập tức</i></p>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <script>
+        // Dữ liệu câu hỏi
+        const questions = [
+            // ========== 5 CÂU LÝ THUYẾT ==========
+            {
+                id: 1,
+                category: "Lý thuyết",
+                question: "Đạo hàm của hàm số \\( f(x) \\) tại điểm \\( x \\) được định nghĩa là giới hạn nào sau đây?",
+                options: [
+                    "\\( \\lim_{h \\to 0} \\frac{f(x+h) + f(x)}{h} \\)",
+                    "\\( \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h} \\)",
+                    "\\( \\lim_{h \\to \\infty} \\frac{f(x+h) - f(x)}{h} \\)",
+                    "\\( \\frac{f(x+h) - f(x)}{h} \\)"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Theo định nghĩa First Principles, đạo hàm được định nghĩa là giới hạn của tỉ số gia số hàm và gia số đối số khi gia số đối số tiến về 0."
+            },
+            {
+                id: 2,
+                category: "Lý thuyết",
+                question: "Công thức nào sau đây là đúng với quy tắc tích \\( (uv)' \\)?",
+                options: [
+                    "\\( u'v' \\)",
+                    "\\( u'v - uv' \\)",
+                    "\\( u'v + uv' \\)",
+                    "\\( uv' - u'v \\)"
+                ],
+                correct: 2,
+                explanation: "Đáp án đúng là C. Quy tắc tích quy định: Đạo hàm của tích hai hàm số bằng đạo hàm hàm thứ nhất nhân hàm thứ hai cộng với hàm thứ nhất nhân đạo hàm hàm thứ hai."
+            },
+            {
+                id: 3,
+                category: "Lý thuyết",
+                question: "Quy tắc thương \\( \\left(\\frac{u}{v}\\right)' \\) được tính bằng công thức nào?",
+                options: [
+                    "\\( \\frac{u'v + uv'}{v^2} \\)",
+                    "\\( \\frac{u'v - uv'}{v^2} \\)",
+                    "\\( \\frac{uv' - u'v}{v^2} \\)",
+                    "\\( \\frac{u'v'}{v^2} \\)"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Quy tắc thương thường được nhớ theo câu: \"Tử đạo hàm nhân mẫu trừ mẫu đạo hàm nhân tử, tất cả chia mẫu bình phương\"."
+            },
+            {
+                id: 4,
+                category: "Lý thuyết",
+                question: "Theo bài giảng, quy tắc Hàm hợp (Chain rule) được ví như hình ảnh nào?",
+                options: [
+                    "Xây nhà từ móng",
+                    "Bóc vỏ hành",
+                    "Cắt bánh chia phần",
+                    "Lắp ráp máy móc"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Thầy Duymt đã ví Chain rule như việc \"bóc vỏ hành\": ta đạo hàm từ lớp vỏ ngoài cùng, sau đó nhân tiếp với đạo hàm của lớp bên trong."
+            },
+            {
+                id: 5,
+                category: "Lý thuyết",
+                question: "Nguyên tắc vàng khi tính đạo hàm hàm hợp là gì?",
+                options: [
+                    "Từ trong ra ngoài",
+                    "Từ ngoài vào trong",
+                    "Nhân chéo các lớp",
+                    "Chia từng lớp cho nhau"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Nguyên tắc vàng của Chain rule là \"Từ ngoài vào trong\": Đạo hàm hàm ngoài, giữ nguyên hàm trong, nhân với đạo hàm hàm trong."
+            },
+
+            // ========== 5 CÂU BÀI TẬP DỄ ==========
+            {
+                id: 6,
+                category: "Bài tập dễ",
+                question: "Đạo hàm của hàm số \\( y = 3x^4 \\) là:",
+                options: [
+                    "\\( 12x^3 \\)",
+                    "\\( 3x^3 \\)",
+                    "\\( 4x^3 \\)",
+                    "\\( 12x^4 \\)"
+                ],
+                correct: 0,
+                explanation: "Đáp án đúng là A. Áp dụng công thức \\( (x^n)' = nx^{n-1} \\), ta có \\( y' = 3 \\cdot 4x^{4-1} = 12x^3 \\)."
+            },
+            {
+                id: 7,
+                category: "Bài tập dễ",
+                question: "Tính đạo hàm của \\( y = \\cos x - \\ln x \\):",
+                options: [
+                    "\\( -\\sin x - \\frac{1}{x} \\)",
+                    "\\( -\\sin x + \\frac{1}{x} \\)",
+                    "\\( \\sin x - \\frac{1}{x} \\)",
+                    "\\( \\sin x + \\frac{1}{x} \\)"
+                ],
+                correct: 0,
+                explanation: "Đáp án đúng là A. Áp dụng quy tắc tổng hiệu: \\( (\\cos x)' = -\\sin x \\) và \\( (\\ln x)' = \\frac{1}{x} \\). Vậy \\( y' = -\\sin x - \\frac{1}{x} \\)."
+            },
+            {
+                id: 8,
+                category: "Bài tập dễ",
+                question: "Đạo hàm của hàm số \\( y = a^x \\) (với \\( a > 0, a \\neq 1 \\)) là:",
+                options: [
+                    "\\( x a^{x-1} \\)",
+                    "\\( a^x \\)",
+                    "\\( a^x \\ln a \\)",
+                    "\\( \\frac{a^x}{\\ln a} \\)"
+                ],
+                correct: 2,
+                explanation: "Đáp án đúng là C. Đây là công thức đạo hàm cơ bản của hàm mũ: \\( (a^x)' = a^x \\ln a \\)."
+            },
+            {
+                id: 9,
+                category: "Bài tập dễ",
+                question: "Đạo hàm của \\( y = \\log_2 x \\) là:",
+                options: [
+                    "\\( \\frac{1}{x} \\)",
+                    "\\( \\frac{1}{x \\ln 2} \\)",
+                    "\\( 2^x \\ln 2 \\)",
+                    "\\( \\frac{\\ln x}{2} \\)"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Áp dụng công thức \\( (\\log_a x)' = \\frac{1}{x \\ln a} \\), với \\( a = 2 \\) ta được \\( y' = \\frac{1}{x \\ln 2} \\)."
+            },
+            {
+                id: 10,
+                category: "Bài tập dễ",
+                question: "Tính đạo hàm của hàm số \\( y = 5 \\):",
+                options: [
+                    "\\( 5 \\)",
+                    "\\( 5x \\)",
+                    "\\( 0 \\)",
+                    "\\( 1 \\)"
+                ],
+                correct: 2,
+                explanation: "Đáp án đúng là C. Đạo hàm của một hằng số luôn bằng 0."
+            },
+
+            // ========== 5 CÂU BÀI TẬP TRUNG BÌNH ==========
+            {
+                id: 11,
+                category: "Bài tập trung bình",
+                question: "Đạo hàm của \\( y = \\sin(2x) \\) là:",
+                options: [
+                    "\\( \\cos(2x) \\)",
+                    "\\( 2\\cos(2x) \\)",
+                    "\\( -2\\cos(2x) \\)",
+                    "\\( 2\\sin(2x) \\)"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Áp dụng Chain rule: Hàm ngoài là \\( \\sin \\) có đạo hàm là \\( \\cos \\). Hàm trong là \\( 2x \\) có đạo hàm là 2. Vậy \\( y' = \\cos(2x) \\cdot 2 = 2\\cos(2x) \\)."
+            },
+            {
+                id: 12,
+                category: "Bài tập trung bình",
+                question: "Cho \\( y = x^2 \\cdot \\sin x \\). Đạo hàm \\( y' \\) là:",
+                options: [
+                    "\\( 2x \\cos x \\)",
+                    "\\( 2x \\sin x + x^2 \\cos x \\)",
+                    "\\( 2x \\sin x - x^2 \\cos x \\)",
+                    "\\( x^2 \\cos x \\)"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Áp dụng quy tắc tích \\( (uv)' = u'v + uv' \\). Ta có \\( u = x^2 \\Rightarrow u' = 2x \\) và \\( v = \\sin x \\Rightarrow v' = \\cos x \\). Vậy \\( y' = 2x \\sin x + x^2 \\cos x \\)."
+            },
+            {
+                id: 13,
+                category: "Bài tập trung bình",
+                question: "Cho \\( y = \\frac{x}{x+1} \\). Đạo hàm \\( y' \\) là:",
+                options: [
+                    "\\( \\frac{1}{(x+1)^2} \\)",
+                    "\\( \\frac{x+2}{(x+1)^2} \\)",
+                    "\\( \\frac{-1}{(x+1)^2} \\)",
+                    "\\( \\frac{2x+1}{(x+1)^2} \\)"
+                ],
+                correct: 0,
+                explanation: "Đáp án đúng là A. Áp dụng quy tắc thương: \\( y' = \\frac{(x)'(x+1) - x(x+1)'}{(x+1)^2} = \\frac{1 \\cdot (x+1) - x \\cdot 1}{(x+1)^2} = \\frac{1}{(x+1)^2} \\)."
+            },
+            {
+                id: 14,
+                category: "Bài tập trung bình",
+                question: "Đạo hàm của \\( y = \\sqrt{x^2 + 1} \\) là:",
+                options: [
+                    "\\( \\frac{1}{2\\sqrt{x^2+1}} \\)",
+                    "\\( \\frac{x}{\\sqrt{x^2+1}} \\)",
+                    "\\( \\frac{2x}{\\sqrt{x^2+1}} \\)",
+                    "\\( \\sqrt{x^2+1} \\)"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Viết lại \\( y = (x^2+1)^{1/2} \\). Áp dụng Chain rule: \\( y' = \\frac{1}{2}(x^2+1)^{-1/2} \\cdot (x^2+1)' = \\frac{1}{2\\sqrt{x^2+1}} \\cdot 2x = \\frac{x}{\\sqrt{x^2+1}} \\)."
+            },
+            {
+                id: 15,
+                category: "Bài tập trung bình",
+                question: "Tính \\( y' \\) của \\( y = e^{3x} \\):",
+                options: [
+                    "\\( e^{3x} \\)",
+                    "\\( 3e^{3x} \\)",
+                    "\\( 3e^{x} \\)",
+                    "\\( 3x e^{3x-1} \\)"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Áp dụng Chain rule cho hàm mũ: \\( (e^u)' = e^u \\cdot u' \\). Ta có \\( y' = e^{3x} \\cdot (3x)' = 3e^{3x} \\)."
+            },
+
+            // ========== 5 CÂU BÀI TẬP KHÓ ==========
+            {
+                id: 16,
+                category: "Bài tập khó",
+                question: "Cho \\( y = x^2 \\cdot \\sin(3x) \\). Đạo hàm \\( y' \\) là:",
+                options: [
+                    "\\( 2x \\sin(3x) + x^2 \\cos(3x) \\)",
+                    "\\( 2x \\sin(3x) + 3x^2 \\cos(3x) \\)",
+                    "\\( 6x \\cos(3x) \\)",
+                    "\\( 2x \\cos(3x) + 3x^2 \\sin(3x) \\)"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Kết hợp quy tắc tích và Chain rule. \\( u=x^2 \\Rightarrow u'=2x \\). \\( v=\\sin(3x) \\Rightarrow v'=\\cos(3x)\\cdot 3 = 3\\cos(3x) \\). Vậy \\( y' = 2x\\sin(3x) + x^2\\cdot 3\\cos(3x) \\)."
+            },
+            {
+                id: 17,
+                category: "Bài tập khó",
+                question: "Tính đạo hàm của \\( y = \\frac{\\cos(2x)}{x^2 + 1} \\):",
+                options: [
+                    "\\( \\frac{-2\\sin(2x)(x^2+1) - 2x\\cos(2x)}{(x^2+1)^2} \\)",
+                    "\\( \\frac{-2\\sin(2x)(x^2+1) + 2x\\cos(2x)}{(x^2+1)^2} \\)",
+                    "\\( \\frac{-2\\sin(2x)}{(x^2+1)^2} \\)",
+                    "\\( \\frac{-\\sin(2x)(x^2+1) - \\cos(2x)}{(x^2+1)^2} \\)"
+                ],
+                correct: 0,
+                explanation: "Đáp án đúng là A. Kết hợp quy tắc thương và Chain rule. \\( u=\\cos(2x) \\Rightarrow u'=-2\\sin(2x) \\). \\( v=x^2+1 \\Rightarrow v'=2x \\). \\( y' = \\frac{-2\\sin(2x)(x^2+1) - \\cos(2x)\\cdot 2x}{(x^2+1)^2} \\)."
+            },
+            {
+                id: 18,
+                category: "Bài tập khó",
+                question: "Đạo hàm của hàm hợp nhiều lớp \\( y = e^{\\sin(x^2)} \\) là:",
+                options: [
+                    "\\( e^{\\cos(x^2)} \\cdot 2x \\)",
+                    "\\( e^{\\sin(x^2)} \\cdot \\cos(x^2) \\)",
+                    "\\( e^{\\sin(x^2)} \\cdot 2x \\)",
+                    "\\( 2x e^{\\sin(x^2)} \\cos(x^2) \\)"
+                ],
+                correct: 3,
+                explanation: "Đáp án đúng là D. Áp dụng Chain rule 3 lớp: Lớp ngoài cùng là e mũ, đạo hàm giữ nguyên. Lớp giữa là sin, đạo hàm ra cos. Lớp trong là x^2, đạo hàm ra 2x. Nhân dồn lại: \\( y' = e^{\\sin(x^2)} \\cdot \\cos(x^2) \\cdot 2x = 2x e^{\\sin(x^2)} \\cos(x^2) \\)."
+            },
+            {
+                id: 19,
+                category: "Bài tập khó",
+                question: "Cho \\( y = \\left( \\frac{x+1}{x-1} \\right)^3 \\). Đạo hàm \\( y' \\) là:",
+                options: [
+                    "\\( 3\\left( \\frac{x+1}{x-1} \\right)^2 \\cdot \\frac{-2}{(x-1)^2} \\)",
+                    "\\( 3\\left( \\frac{x+1}{x-1} \\right)^2 \\cdot \\frac{2}{(x-1)^2} \\)",
+                    "\\( 3\\left( \\frac{x+1}{x-1} \\right)^2 \\cdot \\frac{-1}{(x-1)^2} \\)",
+                    "\\( 3\\left( \\frac{x+1}{x-1} \\right)^2 \\)"
+                ],
+                correct: 0,
+                explanation: "Đáp án đúng là A. Lớp ngoài là lũy thừa 3: \\( 3\\left( \\frac{x+1}{x-1} \\right)^2 \\). Lớp trong là thương, đạo hàm theo quy tắc thương: \\( \\frac{1(x-1) - (x+1)1}{(x-1)^2} = \\frac{-2}{(x-1)^2} \\). Nhân lại ta được kết quả A."
+            },
+            {
+                id: 20,
+                category: "Bài tập khó",
+                question: "Đạo hàm của \\( y = \\sin(\\cos(\\tan x)) \\) là:",
+                options: [
+                    "\\( \\cos(\\cos(\\tan x)) \\cdot \\sin(\\tan x) \\cdot \\sec^2 x \\)",
+                    "\\( \\cos(\\cos(\\tan x)) \\cdot (-\\sin(\\tan x)) \\cdot \\sec^2 x \\)",
+                    "\\( \\cos(\\cos(\\tan x)) \\cdot (-\\sin(\\tan x)) \\cdot \\frac{1}{\\cos^2 x} \\)",
+                    "\\( -\\cos(\\cos(\\tan x)) \\cdot \\cos(\\tan x) \\cdot \\sec^2 x \\)"
+                ],
+                correct: 1,
+                explanation: "Đáp án đúng là B. Bóc vỏ hành từ ngoài vào trong: <br> - Lớp ngoài sin: đạo hàm là cos, giữ nguyên trong → \\( \\cos(\\cos(\\tan x)) \\). <br> - Lớp giữa cos: đạo hàm là -sin, giữ nguyên trong → \\( -\\sin(\\tan x) \\). <br> - Lớp trong tan: đạo hàm là \\( \\sec^2 x \\). <br> Nhân dồn lại: \\( \\cos(\\cos(\\tan x)) \\cdot (-\\sin(\\tan x)) \\cdot \\sec^2 x \\)."
+            }
+        ];
+
+        // Hàm render đề thi ra HTML
+        function renderQuiz() {
+            const container = document.getElementById("quiz-container");
+            let htmlContent = "";
+
+            questions.forEach((q, index) => {
+                htmlContent += `
+                    <div class="question-container" id="question-${q.id}">
+                        <div class="category">Câu ${q.id}: ${q.category}</div>
+                        <div class="question-text">${q.question}</div>
+                        <div class="options">
+                            ${q.options.map((opt, i) => `
+                                <button class="option-btn" id="opt-${q.id}-${i}" onclick="checkAnswer(${q.id}, ${i})">
+                                    <span class="option-letter">${String.fromCharCode(65 + i)}.</span>
+                                    <span>${opt}</span>
+                                </button>
+                            `).join("")}
+                        </div>
+                        <div class="explanation" id="explain-${q.id}">
+                            <strong>💡 Giải thích:</strong> <span id="explain-text-${q.id}"></span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = htmlContent;
+
+            // Bắt MathJax render lại công thức sau khi đã inject HTML
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        // Hàm kiểm tra đáp án
+        function checkAnswer(qId, selectedIdx) {
+            const questionData = questions.find(q => q.id === qId);
+            const correctIdx = questionData.correct;
+            
+            // Vô hiệu hóa tất cả các nút của câu hỏi này
+            for (let i = 0; i < 4; i++) {
+                document.getElementById(`opt-${qId}-${i}`).disabled = true;
+            }
+
+            // Hiển thị trạng thái đúng/sai
+            const selectedBtn = document.getElementById(`opt-${qId}-${selectedIdx}`);
+            const correctBtn = document.getElementById(`opt-${qId}-${correctIdx}`);
+
+            if (selectedIdx === correctIdx) {
+                // Chọn đúng
+                selectedBtn.classList.add("correct");
+            } else {
+                // Chọn sai
+                selectedBtn.classList.add("incorrect");
+                correctBtn.classList.add("highlight-correct"); // Luôn highlight đáp án đúng nếu chọn sai
+            }
+
+            // Hiển thị giải thích
+            const explainDiv = document.getElementById(`explain-${qId}`);
+            const explainText = document.getElementById(`explain-text-${qId}`);
+            explainText.innerHTML = questionData.explanation;
+            explainDiv.style.display = "block";
+
+            // Render lại MathJax cho phần giải thích nếu có công thức
+            if (window.MathJax) {
+                MathJax.typesetPromise([explainDiv]);
+            }
+        }
+
+        // Khởi chạy khi trang được tải
+        window.onload = renderQuiz;
+    </script>
+</body>
+</html>
